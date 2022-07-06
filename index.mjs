@@ -1,3 +1,5 @@
+import {SegFault, GPFault} from './errors.mjs'
+
 let speed = 500
 let manual = false
 let logs = true
@@ -36,9 +38,14 @@ const debug = () => {
 	console.log(REGISTERS)
 }
 
+let run = 0
+
 const memory = () => {
 	let addr = AddrLine
-	if (IO) MEMORY[addr] = DataLine.toString(16)
+	if (IO) {
+		if (addr < 0x4000 && run > 3) throw new SegFault()
+		MEMORY[addr] = DataLine.toString(16)
+	}
 	else {
 		if (MEMORY[addr]) DataLine = MEMORY[addr].toString(16)
 		else {
@@ -84,8 +91,9 @@ program.forEach(byte => {
 
 IO = false
 
-let run = 0
 let entry = ''
+
+let reg = ''
 
 let command = []
 
