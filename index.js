@@ -1,4 +1,4 @@
-let speed = 10
+let speed = 500
 let manual = false
 let logs = true
 
@@ -145,7 +145,7 @@ function operate() {
 		} else {
 			switch(command[0]) {
 				case '01':
-					if (command.length !== 4) {
+					if (command.length !== 2) {
 						memory()
 						command.push(DataLine)
 					} else {
@@ -159,7 +159,7 @@ function operate() {
 					break
 
 				case '02':
-					if (command.length !== 4) {
+					if (command.length !== 2) {
 						memory()
 						command.push(DataLine)
 					} else {
@@ -173,7 +173,7 @@ function operate() {
 					break
 
 				case '05':
-					if (command.length !== 4) {
+					if (command.length !== 2) {
 						memory()
 						command.push(DataLine)
 					} else {
@@ -189,7 +189,7 @@ function operate() {
 					break
 
 				case '06':
-					if (command.length !== 4) {
+					if (command.length !== 2) {
 						memory()
 						command.push(DataLine)
 					} else {
