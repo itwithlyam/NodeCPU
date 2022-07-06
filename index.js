@@ -1,4 +1,4 @@
-let speed = 500
+let speed = 10
 let manual = false
 let logs = true
 
@@ -89,6 +89,8 @@ let entry = ''
 
 let command = []
 
+console.log("STEPPING")
+
 function operate() {
 	if (run === 0) {
 		AddrLine = 0b11111111111110
@@ -116,15 +118,15 @@ function operate() {
 					break;
 				case '03':
 					// Inc RA
-					reg = parseInt(convert(parseInt(REGISTERS.RA), 16, 10))
+					reg = parseInt(REGISTERS.RA, 16)
 					reg += 1
-					REGISTERS.RA = convert(parseInt(reg), 10, 16)
+					REGISTERS.RA = convert(reg, 10, 16)
 					break;
 				case '04':
 					// Inc RB
-					reg = parseInt(convert(parseInt(REGISTERS.RB), 16, 10))
+					reg = parseInt(REGISTERS.RB, 16)
 					reg += 1
-					REGISTERS.RB = convert(parseInt(reg), 10, 16)
+					REGISTERS.RB = convert(reg, 10, 16)
 					break;
 				case '05':
 					// Put immediate into RA
@@ -178,9 +180,9 @@ function operate() {
 						memory()
 						command.push(DataLine)
 						command.shift()
-						reg = parseInt(convert(parseInt(REGISTERS.RA), 16, 10))
+						reg = parseInt(REGISTERS.RA, 16)
 						let imm = command.join('')
-						reg += convert(parseInt(imm, 16), 16, 10)
+						reg += convert(imm, 16, 10)
 						command = []
 						REGISTERS.RA = convert(parseInt(reg), 10, 16)
 					}
@@ -194,9 +196,9 @@ function operate() {
 						memory()
 						command.push(DataLine)
 						command.shift()
-						reg = parseInt(convert(parseInt(REGISTERS.RB), 16, 10))
+						reg = parseInt(REGISTERS.RB, 16)
 						let imm = command.join('')
-						reg += convert(parseInt(imm, 16), 16, 10)
+						reg += convert(imm, 16, 10)
 						command = []
 						REGISTERS.RB = convert(parseInt(reg), 10, 16)
 					}
