@@ -1,4 +1,6 @@
 # NodeCPU
+NodeCPU is a "virtual computer" built in NodeJS. While ths isn't exactly a proof-of-concept, it is still a bit of an experiment.
+
 ## Instruction set
 
 | Opcode | Name | Description | Notes |
@@ -9,7 +11,7 @@
 | 04 | inc rb | Increment RB by 1 |
 | 05 _imm32_ | add imm32,ra | Add immediate to RA | Executes on last byte of immediate |
 | 06 _imm32_ | add imm32,rb | Add immediate to RB | Executes on last byte of immediate |
-| 07 _addr32_ | jmp addr32 | Jump to an address in memory | Executes on last byte of address |
+| 07 _addr16_ | jmp addr16 | Jump to an address in memory | Executes on last byte of address |
 
 ## Memory map
 

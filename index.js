@@ -6,7 +6,7 @@ let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "01 54 12 65 80 02 10 10 10 02 03 07 00 00 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "03 04 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
@@ -33,6 +33,7 @@ const debug = () => {
 	let DataLineBin = DataLine.toString(16)
 	
 	console.log({ A: AddrLine, AB: AddrLineBin, I: IO, D: DataLine, DB: DataLineBin })
+	console.log(REGISTERS)
 }
 
 const memory = () => {
@@ -202,7 +203,7 @@ function operate() {
 					break
 
 				case '07':
-					if (command.length !== 4) {
+					if (command.length !== 2) {
 						memory()
 						command.push(DataLine)
 					} else {
