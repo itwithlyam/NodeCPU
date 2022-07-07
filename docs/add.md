@@ -1,6 +1,7 @@
 # add
 
 ## Instructions
+
 | Opcode | Name | Description |
 | --- | --- | --- |
 | 05 _imm16_ | add imm16,ra | Add immediate to RA |
