@@ -1,20 +1,26 @@
 import {SegFault, GPFault} from './errors.mjs'
+import * as rl from 'node:readline'
 
 let speed = 500
-let manual = false
+let manual = true
 let logs = true
 
 let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "03 04 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "03 04 04 08 01 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
 let REGISTERS = {
 	RA: "00",
 	RB: "00"
+}
+
+let RM = {
+	'0': 'RA',
+	'1': 'RB'
 }
 
 function convert(n, fromBase, toBase) {
@@ -148,6 +154,10 @@ function operate() {
 					// Jump to address in memory
 					command.push('07')
 					break;
+				case '08':
+					// Put reg into reg
+					command.push('08')
+					break;
 				
 			}
 		} else {
@@ -225,6 +235,17 @@ function operate() {
 						memory()
 						command = []
 					}
+					break;
+
+				case '08':
+					memory()
+					reg = DataLine.split('')
+					reg[0] = RM[reg[0]]
+					reg[1] = RM[reg[1]]
+					REGISTERS[reg[1]] = REGISTERS[reg[0]]
+
+					command = []
+					break;
 			}
 		}
 	}
@@ -234,7 +255,7 @@ function operate() {
 
 if (!manual) setInterval(operate, speed)
 else {
-	const readline = require('readline').createInterface({
+	const readline = rl.createInterface({
 	  input: process.stdin,
 	  output: process.stdout,
 	});
