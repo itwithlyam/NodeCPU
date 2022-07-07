@@ -3,9 +3,9 @@ NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proo
 
 ## Instruction set
 
-| Opcode | Name | Description | Notes |
-| --- | --- | --- | --- |
-| 01 _imm16_ | mov ra,imm16 | Put an immediate into RA | Executes on last byte of immediate |
+| Opcode | Name | Description | Notes | Link |
+| --- | --- | --- | --- | --- |
+| 01 _imm16_ | mov ra,imm16 | Put an immediate into RA | Executes on last byte of immediate | [mov](/docs/mov)
 | 02 _imm16_ | mov rb,imm16 | Put an immediate into RB | Executes on last byte of immediate |
 | 03 | inc ra | Increment RA by 1 |
 | 04 | inc rb | Increment RB by 1 |
