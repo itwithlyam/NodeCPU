@@ -1,20 +1,26 @@
 import {SegFault, GPFault} from './errors.mjs'
+import * as rl from 'node:readline'
 
-let speed = 0.00001
-let manual = false
+let speed = 500
+let manual = true
 let logs = true
 
 let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "03 04 04 08 01 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
 let REGISTERS = {
 	RA: "00",
 	RB: "00"
+}
+
+let RM = {
+	'0': 'RA',
+	'1': 'RB'
 }
 
 function convert(n, fromBase, toBase) {
@@ -41,11 +47,9 @@ const debug = () => {
 let run = 0
 
 const memory = () => {
-	let addr = parseInt(AddrLine, 2)
-	if (addr > 32768) throw new SegFault()
-	if (addr < 0) throw new SegFault()
+	let addr = AddrLine
 	if (IO) {
-		if (addr < 16384 && run > 3) throw new SegFault()
+		if (addr < 0x4000 && run > 3) throw new SegFault()
 		MEMORY[addr] = DataLine.toString(16)
 	}
 	else {
@@ -150,6 +154,10 @@ function operate() {
 					// Jump to address in memory
 					command.push('07')
 					break;
+				case '08':
+					// Put reg into reg
+					command.push('08')
+					break;
 				
 			}
 		} else {
@@ -223,11 +231,21 @@ function operate() {
 						command.push(DataLine)
 						command.shift()
 						reg = command.join('')
-						if (parseInt(reg, 16) > 0x4000) throw new SegFault()
 						AddrLine = convert(parseInt(reg), 16, 2) - 1
 						memory()
 						command = []
 					}
+					break;
+
+				case '08':
+					memory()
+					reg = DataLine.split('')
+					reg[0] = RM[reg[0]]
+					reg[1] = RM[reg[1]]
+					REGISTERS[reg[1]] = REGISTERS[reg[0]]
+
+					command = []
+					break;
 			}
 		}
 	}
@@ -237,7 +255,7 @@ function operate() {
 
 if (!manual) setInterval(operate, speed)
 else {
-	const readline = require('readline').createInterface({
+	const readline = rl.createInterface({
 	  input: process.stdin,
 	  output: process.stdout,
 	});
