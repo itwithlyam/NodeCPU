@@ -1,8 +1,8 @@
 # inc
 
 ## Instructions
-|Opcode|Name|Description|
-|---|---|---|
+| Opcode | Name | Description |
+| --- | --- | --- |
 | 03 | inc ra | Increment RA by 1 |
 | 04 | inc rb | Increment RB by 1 |
 
