@@ -24,10 +24,10 @@ NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proo
 
 ### General-purpose registers
 
-| Name | Desc |
-| --- | --- |
-| RA | Accumalator |
-| RB | Base |
+| Name | Desc | RM Nibble |
+| --- | --- | --- |
+| RA | Accumalator | 0x0 |
+| RB | Base | 0x1 |
 
 ## Definitions
 **Immediate**: A value or address in memory [^bigendian]  
