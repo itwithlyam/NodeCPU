@@ -1,6 +1,6 @@
 import {SegFault, GPFault} from './errors.mjs'
 
-let speed = 0.00001
+let speed = 500
 let manual = false
 let logs = true
 
@@ -8,7 +8,7 @@ let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "03 04 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
@@ -41,11 +41,9 @@ const debug = () => {
 let run = 0
 
 const memory = () => {
-	let addr = parseInt(AddrLine, 2)
-	if (addr > 32768) throw new SegFault()
-	if (addr < 0) throw new SegFault()
+	let addr = AddrLine
 	if (IO) {
-		if (addr < 16384 && run > 3) throw new SegFault()
+		if (addr < 0x4000 && run > 3) throw new SegFault()
 		MEMORY[addr] = DataLine.toString(16)
 	}
 	else {
@@ -223,7 +221,6 @@ function operate() {
 						command.push(DataLine)
 						command.shift()
 						reg = command.join('')
-						if (parseInt(reg, 16) > 0x4000) throw new SegFault()
 						AddrLine = convert(parseInt(reg), 16, 2) - 1
 						memory()
 						command = []
