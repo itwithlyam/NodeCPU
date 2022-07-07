@@ -38,3 +38,4 @@ NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proo
 [^start]: Program is stored at beginning of ROM
 [^bigendian]: Uses big endian
 [^rm]: `01`: Input = RA, Target = RB. Used for transferring data between registers. In instruction set docs is shown with _**/r**_
+
