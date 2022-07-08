@@ -1,15 +1,15 @@
 import {SegFault, GPFault} from './errors.mjs'
 import * as rl from 'node:readline'
 
-let speed = 500
-let manual = true
+let speed = 100
+let manual = false
 let logs = true
 
 let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "03 04 04 08 01 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "03 04 04 08 10 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
@@ -100,10 +100,28 @@ IO = false
 let entry = ''
 
 let reg = ''
+let imm = ''
 
 let command = []
 
 console.log("STEPPING")
+
+function immediate(command) {
+	if (command.length !== 2) {
+		memory()
+		command.push(DataLine)
+	} else {
+		memory()
+		command.push(DataLine)
+		command.shift()
+		reg = command.join('')
+		return reg
+	}
+	return command
+}
+function rmByte(byte) {
+	
+}
 
 function operate() {
 	if (run === 0) {
@@ -163,78 +181,49 @@ function operate() {
 		} else {
 			switch(command[0]) {
 				case '01':
-					if (command.length !== 2) {
-						memory()
-						command.push(DataLine)
-					} else {
-						memory()
-						command.push(DataLine)
-						command.shift()
-						let imm = command.join('')
-						REGISTERS.RA = imm
-						command = []
-					}
+					command = immediate(command)
+					if (Array.isArray(command)) break
+					
+					REGISTERS.RA = reg
+					command = []
 					break
 
 				case '02':
-					if (command.length !== 2) {
-						memory()
-						command.push(DataLine)
-					} else {
-						memory()
-						command.push(DataLine)
-						command.shift()
-						let imm = command.join('')
-						REGISTERS.RB = imm
-						command = []
-					}
+					command = immediate(command)
+					if (Array.isArray(command)) break
+					
+					REGISTERS.RB = reg
+					command = []
 					break
 
 				case '05':
-					if (command.length !== 2) {
-						memory()
-						command.push(DataLine)
-					} else {
-						memory()
-						command.push(DataLine)
-						command.shift()
-						reg = parseInt(REGISTERS.RA, 16)
-						let imm = command.join('')
-						reg += convert(imm, 16, 10)
-						command = []
-						REGISTERS.RA = convert(parseInt(reg), 10, 16)
-					}
+					imm = immediate(command)
+					if (Array.isArray(imm)) break
+
+					reg = parseInt(REGISTERS.RA, 16)
+					reg += convert(imm, 16, 10)
+					command = []
+					REGISTERS.RA = convert(parseInt(reg), 10, 16)
 					break
 
 				case '06':
-					if (command.length !== 2) {
-						memory()
-						command.push(DataLine)
-					} else {
-						memory()
-						command.push(DataLine)
-						command.shift()
-						reg = parseInt(REGISTERS.RB, 16)
-						let imm = command.join('')
-						reg += convert(imm, 16, 10)
-						command = []
-						REGISTERS.RB = convert(parseInt(reg), 10, 16)
-					}
+					imm = immediate(command)
+					if (Array.isArray(imm)) break
+
+					reg = parseInt(REGISTERS.RB, 16)
+					reg += convert(imm, 16, 10)
+					command = []
+					REGISTERS.RB = convert(parseInt(reg), 10, 16)
 					break
 
 				case '07':
-					if (command.length !== 2) {
-						memory()
-						command.push(DataLine)
-					} else {
-						memory()
-						command.push(DataLine)
-						command.shift()
-						reg = command.join('')
-						AddrLine = convert(parseInt(reg), 16, 2) - 1
-						memory()
-						command = []
-					}
+					command = immediate(command)
+					if (Array.isArray(command)) break
+					
+					AddrLine = convert(parseInt(reg), 16, 2) - 1
+					memory()
+					command = []
+					
 					break;
 
 				case '08':
