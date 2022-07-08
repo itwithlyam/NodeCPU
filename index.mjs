@@ -119,8 +119,12 @@ function immediate(command) {
 	}
 	return command
 }
-function rmByte(byte) {
-	
+function rmByte() {
+	memory()
+	reg = DataLine.split('')
+	reg[0] = RM[reg[0]]
+	reg[1] = RM[reg[1]]
+	REGISTERS[reg[1]] = REGISTERS[reg[0]]
 }
 
 function operate() {
@@ -227,11 +231,7 @@ function operate() {
 					break;
 
 				case '08':
-					memory()
-					reg = DataLine.split('')
-					reg[0] = RM[reg[0]]
-					reg[1] = RM[reg[1]]
-					REGISTERS[reg[1]] = REGISTERS[reg[0]]
+					rmByte()
 
 					command = []
 					break;
