@@ -1,8 +1,10 @@
 # NodeCPU
-NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proof-of-concept, it is still a bit of an experiment.
+`NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proof-of-concept, it is still a bit of an experiment.`
+
+<hr>
 
 # Application Binary Interface
-This is NodeCPU ABI `v0.0.1`.
+This is NodeCPU ABI `v0.0.2`. This version includes the new registers and some new instructions.
 
 ## Instruction set
 
