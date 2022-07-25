@@ -16,6 +16,7 @@ This is NodeCPU ABI `v0.0.1`. To find older versions, go to [visit our archives]
 ## Low Level System Information
 
 ### Memory Map
+
 | Addr | Desc |
 | ---: | :--- |
 | 0x8000 | End of memory |
@@ -25,6 +26,7 @@ This is NodeCPU ABI `v0.0.1`. To find older versions, go to [visit our archives]
 The entry point for programs is 0x0000. ROM can only be modified in "entry mode".
 
 ### Modes
+
 | Mode | Byte | Features | When to use |
 | ---: | :---: | :---: | :--- |
 | Entry | 0x00 | Full access to processor, including ROM | While initialising |
