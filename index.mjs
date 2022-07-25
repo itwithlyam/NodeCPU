@@ -16,14 +16,20 @@ let STACK = []
 let REGISTERS = {
 	RA: "00",
 	RB: "00",
-	MR: "00"
+	MR: "00",
+	RC: "00",
+	RD: "00",
+	RR: "00"
 }
 
 let RM = {
 	'0': null,
 	'1': 'RA',
 	'2': 'RB',
-	'3': 'MR'
+	'3': 'MR',
+	'4': 'RC',
+	'5': 'RD',
+	'6': 'RR'
 }
 
 let MR = {

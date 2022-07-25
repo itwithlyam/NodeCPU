@@ -2,7 +2,8 @@
 NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proof-of-concept, it is still a bit of an experiment.
 
 # Application Binary Interface
-This is NodeCPU ABI `v0.0.1`. To find older versions, go to [visit our archives](/NodeCPU/archives).
+This is NodeCPU ABI `v0.0.1`.
+
 ## Instruction set
 
 | Opcode | Name | Description | Notes | Link |
@@ -41,8 +42,10 @@ These registers can be used for any operation, but the recommened uses are as fo
 
 | Name | Recommended Use | RM Nibble |
 | --- | --- | --- |
-| RA | Temporary storage/parameter 1 for subroutines | 0x1 |
-| RB | Parameter 2 for subroutines | 0x2 |
+| RA | Temporary storage/Parameter 1 | 0x1 |
+| RB | Parameter 2 | 0x2 |
+| RC | Counter/Parameter 3 | 0x4 |
+| RD | Result/Parameter 4 | 0x5 |
 
 ### Special registers
 These registers can only be used for the operation specified.
@@ -50,6 +53,7 @@ These registers can only be used for the operation specified.
 | Name | Use | RM Nibble |
 | --- | --- | --- |
 | MR | Mode Register | 0x3 |
+| RR | Return Register (Address to return to after subroutine) | 0x6 |
 
 ## Definitions
 **Immediate**: A value or address in memory [^bigendian]  
