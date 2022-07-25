@@ -9,7 +9,7 @@ let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "01 10 00 00 01 20 00 00 01 30 00 00 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "03 10 03 20 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
@@ -162,29 +162,13 @@ function operate() {
 					// Put immediate into register
 					command.push("01")
 					break;
-				case '02':
-					// Put immediate into RB
-					command.push("02")
-					break;
 				case '03':
-					// Inc RA
-					reg = parseInt(REGISTERS.RA, 16)
-					reg += 1
-					REGISTERS.RA = convert(reg, 10, 16)
-					break;
-				case '04':
-					// Inc RB
-					reg = parseInt(REGISTERS.RB, 16)
-					reg += 1
-					REGISTERS.RB = convert(reg, 10, 16)
+					// Inc register
+					command.push("03")
 					break;
 				case '05':
-					// Put immediate into RA
+					// Add immediate to register
 					command.push("05")
-					break;
-				case '06':
-					// Put immediate into RB
-					command.push("06")
 					break;
 				case '07':
 					// Jump to address in memory
@@ -214,32 +198,25 @@ function operate() {
 					c = []
 					break
 
-				case '02':
-					command = immediate(command)
-					if (Array.isArray(command)) break
-					
-					REGISTERS.RB = reg
+				case '03':
+					reg = rmByte()
+					REGISTERS[reg]++
 					command = []
-					break
+					break;
 
 				case '05':
-					imm = immediate(command)
-					if (Array.isArray(imm)) break
+					if (command.length == 1) {
+						command[1] = rmByte()
+						c.push(command[1])
+						break
+					}
+					else command = immediate(command, true)
+					c.push(command)
+					if (Array.isArray(command)) break
 
-					reg = parseInt(REGISTERS.RA, 16)
-					reg += convert(imm, 16, 10)
+					REGISTERS[c[0]] += reg
 					command = []
-					REGISTERS.RA = convert(parseInt(reg), 10, 16)
-					break
-
-				case '06':
-					imm = immediate(command)
-					if (Array.isArray(imm)) break
-
-					reg = parseInt(REGISTERS.RB, 16)
-					reg += convert(imm, 16, 10)
-					command = []
-					REGISTERS.RB = convert(parseInt(reg), 10, 16)
+					c = []
 					break
 
 				case '07':

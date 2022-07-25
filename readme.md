@@ -6,11 +6,8 @@ NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proo
 | Opcode | Name | Description | Notes | Link |
 | --- | --- | --- | --- | --- |
 | 01 _/rn imm16_ | mov r,imm16 | Put an immediate into a register || [mov](/NodeCPU/mov)
-| 02 _imm16_ | mov rb,imm16 | Put an immediate into RB || [mov](/NodeCPU/mov)
-| 03 | inc ra | Increment RA by 1 || [inc](/NodeCPU/inc)
-| 04 | inc rb | Increment RB by 1 || [inc](/NodeCPU/inc)
-| 05 _imm16_ | add imm16,ra | Add immediate to RA || [add](/NodeCPU/add)
-| 06 _imm16_ | add imm16,rb | Add immediate to RB || [add](/NodeCPU/add)
+| 03 _/rn_ | inc r | Increment a register by 1 || [inc](/NodeCPU/inc)
+| 05 _/rn imm16_ | add imm16,r | Add immediate to a register || [add](/NodeCPU/add)
 | 07 _addr16_ | jmp addr16 | Jump to an address in memory || [jmp](/NodeCPU/jmp)
 | 08 _/r_ | mov r,r | Put the contents of a register into a register || [mov](/NodeCPU/mov)
  
