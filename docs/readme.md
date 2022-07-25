@@ -1,6 +1,8 @@
 # NodeCPU
 NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proof-of-concept, it is still a bit of an experiment.
 
+# Application Binary Interface
+This is NodeCPU ABI `v0.0.1`. To find older versions, go to [visit our archives](/NodeCPU/archives).
 ## Instruction set
 
 | Opcode | Name | Description | Notes | Link |
@@ -11,24 +13,39 @@ NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proo
 | 07 _addr16_ | jmp addr16 | Jump to an address in memory || [jmp](/NodeCPU/jmp)
 | 08 _/r_ | mov r,r | Put the contents of a register into a register || [mov](/NodeCPU/mov)
  
-## Memory map
+## Low Level System Information
 
+### Memory Map
 | Addr | Desc |
 | ---: | :--- |
 | 0x8000 | End of memory |
 | 0x4000 | Randomly Accessible Memory (RAM) |
-| 0x0000 | Read-Only Memory (ROM) [^start] |
+| 0x0000 | Read-Only Memory (ROM) |
 
+The entry point for programs is 0x0000. ROM can only be modified in "entry mode".
+
+### Modes
+| Mode | Byte | Features | When to use |
+| ---: | :---: | :---: | :--- |
+| Entry | 0x00 | Full access to processor, including ROM | While initialising |
+| Boot | 0x01 | Access to bootloader and RAM | When booting an operating system |
+| Protected | 0x02 | Access to RAM | When in an operating system |
+
+To switch modes, put the byte into Register MR.
+
+## Calling Convention
 ### General-purpose registers
+These registers can be used for any operation, but the recommened uses are as follows:
 
-| Name | Desc | RM Nibble |
+| Name | Recommended Use | RM Nibble |
 | --- | --- | --- |
-| RA | Accumalator | 0x1 |
-| RB | Base | 0x2 |
+| RA | Temporary storage/parameter 1 for subroutines | 0x1 |
+| RB | Parameter 2 for subroutines | 0x2 |
 
 ### Special registers
+These registers can only be used for the operation specified.
 
-| Name | Desc | RM Nibble |
+| Name | Use | RM Nibble |
 | --- | --- | --- |
 | MR | Mode Register | 0x3 |
 
