@@ -9,18 +9,27 @@ let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "03 04 04 08 10 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "03 10 03 20 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
 let REGISTERS = {
 	RA: "00",
-	RB: "00"
+	RB: "00",
+	MR: "00"
 }
 
 let RM = {
-	'0': 'RA',
-	'1': 'RB'
+	'0': null,
+	'1': 'RA',
+	'2': 'RB',
+	'3': 'MR'
+}
+
+let MR = {
+	'00': "default",
+	'01': "boot",
+	'02': "protected"
 }
 
 function convert(n, fromBase, toBase) {
@@ -106,14 +115,15 @@ let command = []
 
 console.log("STEPPING")
 
-function immediate(command) {
-	if (command.length !== 2) {
+function immediate(command, rm) {
+	if ((rm && command.length !== 3) || (!rm && command.length !== 2)) {
 		memory()
 		command.push(DataLine)
 	} else {
 		memory()
 		command.push(DataLine)
 		command.shift()
+		if (rm) command.shift()
 		reg = command.join('')
 		return reg
 	}
@@ -124,8 +134,12 @@ function rmByte() {
 	reg = DataLine.split('')
 	reg[0] = RM[reg[0]]
 	reg[1] = RM[reg[1]]
+	if (reg[0] == null) throw new GPFault()
+	if (reg[1] == null) return reg[0]
 	REGISTERS[reg[1]] = REGISTERS[reg[0]]
 }
+
+let c = []
 
 function operate() {
 	if (run === 0) {
@@ -145,32 +159,16 @@ function operate() {
 				case '00':
 					break
 				case '01':
-					// Put immediate into RA
+					// Put immediate into register
 					command.push("01")
 					break;
-				case '02':
-					// Put immediate into RB
-					command.push("02")
-					break;
 				case '03':
-					// Inc RA
-					reg = parseInt(REGISTERS.RA, 16)
-					reg += 1
-					REGISTERS.RA = convert(reg, 10, 16)
-					break;
-				case '04':
-					// Inc RB
-					reg = parseInt(REGISTERS.RB, 16)
-					reg += 1
-					REGISTERS.RB = convert(reg, 10, 16)
+					// Inc register
+					command.push("03")
 					break;
 				case '05':
-					// Put immediate into RA
+					// Add immediate to register
 					command.push("05")
-					break;
-				case '06':
-					// Put immediate into RB
-					command.push("06")
 					break;
 				case '07':
 					// Jump to address in memory
@@ -183,41 +181,42 @@ function operate() {
 				
 			}
 		} else {
+			
 			switch(command[0]) {
 				case '01':
-					command = immediate(command)
+					if (command.length == 1) {
+						command[1] = rmByte()
+						c.push(command[1])
+						break
+					}
+					else command = immediate(command, true)
+					c.push(command)
 					if (Array.isArray(command)) break
-					
-					REGISTERS.RA = reg
+
+					REGISTERS[c[0]] = reg
 					command = []
+					c = []
 					break
 
-				case '02':
-					command = immediate(command)
-					if (Array.isArray(command)) break
-					
-					REGISTERS.RB = reg
+				case '03':
+					reg = rmByte()
+					REGISTERS[reg]++
 					command = []
-					break
+					break;
 
 				case '05':
-					imm = immediate(command)
-					if (Array.isArray(imm)) break
+					if (command.length == 1) {
+						command[1] = rmByte()
+						c.push(command[1])
+						break
+					}
+					else command = immediate(command, true)
+					c.push(command)
+					if (Array.isArray(command)) break
 
-					reg = parseInt(REGISTERS.RA, 16)
-					reg += convert(imm, 16, 10)
+					REGISTERS[c[0]] += reg
 					command = []
-					REGISTERS.RA = convert(parseInt(reg), 10, 16)
-					break
-
-				case '06':
-					imm = immediate(command)
-					if (Array.isArray(imm)) break
-
-					reg = parseInt(REGISTERS.RB, 16)
-					reg += convert(imm, 16, 10)
-					command = []
-					REGISTERS.RB = convert(parseInt(reg), 10, 16)
+					c = []
 					break
 
 				case '07':
@@ -231,7 +230,7 @@ function operate() {
 					break;
 
 				case '08':
-					rmByte()
+					if (rmByte()) throw new GPFault() // If no second rm nibble, fault
 
 					command = []
 					break;

@@ -4,8 +4,7 @@
 
 | Opcode | Name | Description |
 | --- | --- | --- |
-| 05 _imm16_ | add imm16,ra | Add immediate to RA |
-| 06 _imm16_ | add imm16,rb | Add immediate to RB |
+| 05 _/rn imm16_ | add imm16,r | Add immediate to a register |
 
 ## Flags affected
 None
