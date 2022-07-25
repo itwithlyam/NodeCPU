@@ -13,7 +13,7 @@ NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proo
 | 06 _imm16_ | add imm16,rb | Add immediate to RB || [add](/NodeCPU/add)
 | 07 _addr16_ | jmp addr16 | Jump to an address in memory || [jmp](/NodeCPU/jmp)
 | 08 _/r_ | mov r,r | Put the contents of a register into a register || [mov](/NodeCPU/mov)
-
+ 
 ## Memory map
 
 | Addr | Desc |
