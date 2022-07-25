@@ -26,8 +26,14 @@ NodeCPU is a "virtual computer" built in NodeJS. While this isn't exactly a proo
 
 | Name | Desc | RM Nibble |
 | --- | --- | --- |
-| RA | Accumalator | 0x0 |
-| RB | Base | 0x1 |
+| RA | Accumalator | 0x1 |
+| RB | Base | 0x2 |
+
+### Special registers
+
+| Name | Desc | RM Nibble |
+| --- | --- | --- |
+| MR | Mode Register | 0x3 |
 
 ## Definitions
 **Immediate**: A value or address in memory [^bigendian]  
