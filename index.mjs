@@ -15,12 +15,21 @@ let MEMORY = {}
 let STACK = []
 let REGISTERS = {
 	RA: "00",
-	RB: "00"
+	RB: "00",
+	MR: "00"
 }
 
 let RM = {
-	'0': 'RA',
-	'1': 'RB'
+	'0': null,
+	'1': 'RA',
+	'2': 'RB',
+	'3': 'MR'
+}
+
+let MR = {
+	'00': "default",
+	'01': "boot",
+	'02': "protected"
 }
 
 function convert(n, fromBase, toBase) {
@@ -124,6 +133,8 @@ function rmByte() {
 	reg = DataLine.split('')
 	reg[0] = RM[reg[0]]
 	reg[1] = RM[reg[1]]
+	if (reg[0] == null) throw new GPFault()
+	if (reg[1] == null) return reg[0]
 	REGISTERS[reg[1]] = REGISTERS[reg[0]]
 }
 
