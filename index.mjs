@@ -9,7 +9,7 @@ let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "03 04 04 08 10 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "01 10 00 00 01 20 00 00 01 30 00 00 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
@@ -115,14 +115,15 @@ let command = []
 
 console.log("STEPPING")
 
-function immediate(command) {
-	if (command.length !== 2) {
+function immediate(command, rm) {
+	if ((rm && command.length !== 3) || (!rm && command.length !== 2)) {
 		memory()
 		command.push(DataLine)
 	} else {
 		memory()
 		command.push(DataLine)
 		command.shift()
+		if (rm) command.shift()
 		reg = command.join('')
 		return reg
 	}
@@ -137,6 +138,8 @@ function rmByte() {
 	if (reg[1] == null) return reg[0]
 	REGISTERS[reg[1]] = REGISTERS[reg[0]]
 }
+
+let c = []
 
 function operate() {
 	if (run === 0) {
@@ -156,7 +159,7 @@ function operate() {
 				case '00':
 					break
 				case '01':
-					// Put immediate into RA
+					// Put immediate into register
 					command.push("01")
 					break;
 				case '02':
@@ -194,13 +197,21 @@ function operate() {
 				
 			}
 		} else {
+			
 			switch(command[0]) {
 				case '01':
-					command = immediate(command)
+					if (command.length == 1) {
+						command[1] = rmByte()
+						c.push(command[1])
+						break
+					}
+					else command = immediate(command, true)
+					c.push(command)
 					if (Array.isArray(command)) break
-					
-					REGISTERS.RA = reg
+
+					REGISTERS[c[0]] = reg
 					command = []
+					c = []
 					break
 
 				case '02':
@@ -242,7 +253,7 @@ function operate() {
 					break;
 
 				case '08':
-					rmByte()
+					if (rmByte()) throw new GPFault() // If no second rm nibble, fault
 
 					command = []
 					break;
