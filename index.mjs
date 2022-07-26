@@ -1,15 +1,15 @@
 import {SegFault, GPFault} from './errors.mjs'
 import * as rl from 'node:readline'
 
-let speed = 0.1
+let speed = 100
 let manual = false
-let logs = false
+let logs = true
 
 let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "02 10 01 02 01 10 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "02 10 01 02 01 10 04 10 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
@@ -84,12 +84,15 @@ const memory = () => {
 
 const stack = () => {
 	let pos = parseInt(REGISTERS.SP, 16)
+	if (pos > 0x63) pos = 0x00
+	if (pos < 0x00) pos = 0x64
 	
 	if (IO) {
+		pos++
 		if (STACK[pos] !== "00") throw new SegFault()
 		STACK[pos] = DataLine
-		pos++
 	} else {
+		reg = STACK[pos]
 		STACK[pos] = "00"
 		pos--
 	}
@@ -200,6 +203,10 @@ function operate() {
 					// Inc register
 					command.push("03")
 					break;
+				case '04':
+					// Pop from stack to register
+					command.push("04")
+					break
 				case '05':
 					// Add immediate to register
 					command.push("05")
@@ -249,6 +256,13 @@ function operate() {
 					REGISTERS[reg]++
 					command = []
 					break;
+
+				case '04':
+					imm = rmByte()
+					stack()
+					REGISTERS[imm] = reg
+					command = []
+					break
 
 				case '05':
 					if (command.length == 1) {
