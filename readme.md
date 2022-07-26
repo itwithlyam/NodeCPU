@@ -22,7 +22,8 @@ This is NodeCPU ABI `v0.0.2`. This version includes the new registers and some n
 
 | Addr | Desc |
 | ---: | :--- |
-| 0x8000 | End of memory |
+| 0x8065 | End of memory |
+| 0x8000 | Stack |
 | 0x4000 | Randomly Accessible Memory (RAM) |
 | 0x0000 | Read-Only Memory (ROM) |
 
@@ -55,7 +56,7 @@ These registers can only be used for the operation specified.
 | Name | Use | RM Nibble |
 | --- | --- | --- |
 | MR | Mode Register | 0x3 |
-| RR | Return Register (Address to return to after subroutine) | 0x6 |
+| SP | Stack Pointer | 0x6 |
 
 ## Definitions
 **Immediate**: A value or address in memory [^bigendian]  

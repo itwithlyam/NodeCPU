@@ -1,25 +1,30 @@
 import {SegFault, GPFault} from './errors.mjs'
 import * as rl from 'node:readline'
 
-let speed = 100
+let speed = 0.1
 let manual = false
-let logs = true
+let logs = false
 
 let AddrLine = 0b0000000000000000
 let DataLine = 0x00
 let IO = false
 
-let program = "03 10 03 20 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
+let program = "02 10 01 02 01 10 07 00 00".split(' ').join('').match(/.{1,2}/g) || []
 
 let MEMORY = {}
 let STACK = []
+
+for (let i = 0; i < 100; i++) {
+	STACK[i] = "00"
+}
+
 let REGISTERS = {
 	RA: "00",
 	RB: "00",
 	MR: "00",
 	RC: "00",
 	RD: "00",
-	RR: "00"
+	SP: "00"
 }
 
 let RM = {
@@ -29,7 +34,7 @@ let RM = {
 	'3': 'MR',
 	'4': 'RC',
 	'5': 'RD',
-	'6': 'RR'
+	'6': 'SP'
 }
 
 let MR = {
@@ -55,7 +60,7 @@ const debug = () => {
 	let AddrLineBin = AddrLine.toString(2)
 	let DataLineBin = DataLine.toString(16)
 	
-	console.log({ A: AddrLine, AB: AddrLineBin, I: IO, D: DataLine, DB: DataLineBin })
+	console.log({ A: AddrLine, AB: AddrLineBin, I: IO, D: DataLine, DB: DataLineBin, S: STACK[parseInt(REGISTERS.SP, 16)] })
 	console.log(REGISTERS)
 }
 
@@ -74,6 +79,25 @@ const memory = () => {
 			DataLine = "00"
 		}
 	}
+	debug()
+}
+
+const stack = () => {
+	let pos = parseInt(REGISTERS.SP, 16)
+	
+	if (IO) {
+		if (STACK[pos] !== "00") throw new SegFault()
+		STACK[pos] = DataLine
+		pos++
+	} else {
+		STACK[pos] = "00"
+		pos--
+	}
+
+	if (pos > 0x63) pos = 0x00
+	if (pos < 0x00) pos = 0x64
+	REGISTERS.SP = convert(pos, 10, 16)
+
 	debug()
 }
 
@@ -119,7 +143,7 @@ let imm = ''
 
 let command = []
 
-console.log("STEPPING")
+console.log("Starting Execution")
 
 function immediate(command, rm) {
 	if ((rm && command.length !== 3) || (!rm && command.length !== 2)) {
@@ -168,6 +192,10 @@ function operate() {
 					// Put immediate into register
 					command.push("01")
 					break;
+				case '02':
+					// Push immediate onto stack
+					command.push("02")
+					break;
 				case '03':
 					// Inc register
 					command.push("03")
@@ -202,6 +230,18 @@ function operate() {
 					REGISTERS[c[0]] = reg
 					command = []
 					c = []
+					break
+
+				case '02':
+					command = immediate(command)
+					if (Array.isArray(command)) break
+
+					DataLine = reg
+					IO = true
+					stack()
+					IO = false
+
+					command = []
 					break
 
 				case '03':
@@ -256,8 +296,10 @@ else {
 
 	console.log("MANUAL STEPPING")
 	function step() {
-		readline.question("", () => {
+		readline.question("", d => {
 			operate()
+			if (d == "stack") console.log(STACK)
+			else if (d == "registers") console.log(REGISTERS)
 			step()
 		})
 	}
