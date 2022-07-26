@@ -4,14 +4,16 @@
 <hr>
 
 # Application Binary Interface
-This is NodeCPU ABI `v0.0.2`. This version includes the new registers and some new instructions.
+This is NodeCPU ABI `v0.0.3`. This version includes the new stack.
 
 ## Instruction set
 
 | Opcode | Name | Description | Notes | Link |
 | --- | --- | --- | --- | --- |
 | 01 _/rn imm16_ | mov r,imm16 | Put an immediate into a register || [mov](/NodeCPU/mov)
+| 02 _imm16_ | push imm16 | Push an immediate onto the stack || [push](/NodeCPU/push) 
 | 03 _/rn_ | inc r | Increment a register by 1 || [inc](/NodeCPU/inc)
+| 04 _/rn_ | pop r | Pop from the stack to a register || [pop](/NodeCPU/pop) 
 | 05 _/rn imm16_ | add imm16,r | Add immediate to a register || [add](/NodeCPU/add)
 | 07 _addr16_ | jmp addr16 | Jump to an address in memory || [jmp](/NodeCPU/jmp)
 | 08 _/r_ | mov r,r | Put the contents of a register into a register || [mov](/NodeCPU/mov)
@@ -22,11 +24,16 @@ This is NodeCPU ABI `v0.0.2`. This version includes the new registers and some n
 
 | Addr | Desc |
 | ---: | :--- |
-| 0x8000 | End of memory |
+| 0x8065 | End of memory |
+| 0x8000 | Stack |
 | 0x4000 | Randomly Accessible Memory (RAM) |
 | 0x0000 | Read-Only Memory (ROM) |
 
 The entry point for programs is 0x0000. ROM can only be modified in "entry mode".
+
+### Stack
+
+At memory address 0x8000, there are 100 bytes allocated to the stack. You can use [push](/NodeCPU/push) and [pop](/NodeCPU/pop) to interact with the stack. The stack itself operates on a LIFO[^lifo] (Last In; First Out) system and the stack pointer is kept in register SP. When the stack pointer reaches `0x64` it goes back to `0x00` until it reaches existing elements, when it will throw a Segmentation Fault. Be careful!
 
 ### Modes
 
@@ -55,7 +62,7 @@ These registers can only be used for the operation specified.
 | Name | Use | RM Nibble |
 | --- | --- | --- |
 | MR | Mode Register | 0x3 |
-| RR | Return Register (Address to return to after subroutine) | 0x6 |
+| SP | Stack Pointer | 0x6 |
 
 ## Definitions
 **Immediate**: A value or address in memory [^bigendian]  
@@ -66,3 +73,4 @@ These registers can only be used for the operation specified.
 [^start]: Program is stored at beginning of ROM
 [^bigendian]: Uses big endian
 [^rm]: `01`: Input = RA, Target = RB. Used for transferring data between registers. In instruction set docs is shown with _**/r**_. If the opcode has _/r**n**_, the target should be left blank.
+[^lifo]: See https://techterms.com/definition/filo for more details.
