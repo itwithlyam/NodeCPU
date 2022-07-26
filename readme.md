@@ -4,7 +4,7 @@
 <hr>
 
 # Application Binary Interface
-This is NodeCPU ABI `v0.0.2`. This version includes the new registers and some new instructions.
+This is NodeCPU ABI `v0.0.3`. This version includes the new stack.
 
 ## Instruction set
 
@@ -30,6 +30,10 @@ This is NodeCPU ABI `v0.0.2`. This version includes the new registers and some n
 | 0x0000 | Read-Only Memory (ROM) |
 
 The entry point for programs is 0x0000. ROM can only be modified in "entry mode".
+
+### Stack
+
+At memory address 0x8000, there are 100 bytes allocated to the stack. You can use [push](/NodeCPU/push) and [pop](/NodeCPU/pop) to interact with the stack. The stack itself operates on a LIFO[^lifo] (Last In; First Out) system and the stack pointer is kept in register SP. When the stack pointer reaches `0x64` it goes back to `0x00` until it reaches existing elements, when it will throw a Segmentation Fault. Be careful!
 
 ### Modes
 
@@ -69,3 +73,4 @@ These registers can only be used for the operation specified.
 [^start]: Program is stored at beginning of ROM
 [^bigendian]: Uses big endian
 [^rm]: `01`: Input = RA, Target = RB. Used for transferring data between registers. In instruction set docs is shown with _**/r**_. If the opcode has _/r**n**_, the target should be left blank.
+[^lifo]: See https://techterms.com/definition/filo for more details.
