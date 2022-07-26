@@ -13,6 +13,7 @@ This is NodeCPU ABI `v0.0.2`. This version includes the new registers and some n
 | 01 _/rn imm16_ | mov r,imm16 | Put an immediate into a register || [mov](/NodeCPU/mov)
 | 02 _imm16_ | push imm16 | Push an immediate onto the stack || [push](/NodeCPU/push) 
 | 03 _/rn_ | inc r | Increment a register by 1 || [inc](/NodeCPU/inc)
+| 04 _/rn_ | pop r | Pop from the stack to a register || [pop](/NodeCPU/pop) 
 | 05 _/rn imm16_ | add imm16,r | Add immediate to a register || [add](/NodeCPU/add)
 | 07 _addr16_ | jmp addr16 | Jump to an address in memory || [jmp](/NodeCPU/jmp)
 | 08 _/r_ | mov r,r | Put the contents of a register into a register || [mov](/NodeCPU/mov)

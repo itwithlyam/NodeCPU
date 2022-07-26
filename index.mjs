@@ -1,7 +1,7 @@
 import {SegFault, GPFault} from './errors.mjs'
 import * as rl from 'node:readline'
 
-let speed = 100
+let speed = 1
 let manual = false
 let logs = true
 
