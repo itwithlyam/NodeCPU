@@ -1,9 +1,13 @@
 # Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+name: Deploy GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
   # Allows you to run this workflow manually from the Actions tab
+  push:
+    branches:
+     - main
+     
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -20,8 +24,37 @@ concurrency:
 jobs:
   # Build job
   build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    if: "startsWith(github.event.head_commit.message, '[publish]')"
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Pull repository
+        run: git pull
+      
+      - name: Copy README
+        run: cp readme.md ./docs
+        
+      - name: Commit files
+        run: |
+          git add .
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "[auto] Publish README" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+  start:
     runs-on: ubuntu-latest
     steps:
+      - name: Pull
+        run: "git pull"
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Pages
