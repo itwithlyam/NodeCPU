@@ -33,7 +33,7 @@ The entry point for programs is 0x0000. ROM can only be modified in "entry mode"
 
 ### Stack
 
-At memory address 0x8000, there are 100 bytes allocated to the stack. You can use [push](/NodeCPU/push) and [pop](/NodeCPU/pop) to interact with the stack. The stack itself operates on a LIFO[^lifo] (Last In; First Out) system and the stack pointer is kept in register SP. When the stack pointer reaches `0x64` it goes back to `0x00` until it reaches existing elements, when it will throw a Segmentation Fault. Be careful!
+At memory address 0x8000, there are 100 bytes allocated to the stack. You can use [push](/NodeCPU/push) and [pop](/NodeCPU/pop) to interact with the stack. The stack itself operates on a FILO[^lifo] (First In; Last Out) system and the stack pointer is kept in register SP. When the stack pointer reaches `0x64` it goes back to `0x00` until it reaches existing elements, when it will throw a Segmentation Fault. Be careful!
 
 ### Modes
 
