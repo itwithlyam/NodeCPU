@@ -74,3 +74,4 @@ These registers can only be used for the operation specified.
 [^bigendian]: Uses big endian
 [^rm]: `01`: Input = RA, Target = RB. Used for transferring data between registers. In instruction set docs is shown with _**/r**_. If the opcode has _/r**n**_, the target should be left blank.
 [^lifo]: See https://techterms.com/definition/filo for more details.
+
