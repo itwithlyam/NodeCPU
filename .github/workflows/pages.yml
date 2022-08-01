@@ -19,7 +19,6 @@ permissions:
 jobs:
   start:
     runs-on: ubuntu-latest
-    if: "startsWith(github.event.head_commit.message, '[task-deploy]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
