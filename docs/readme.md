@@ -10,13 +10,13 @@ This is NodeCPU ABI `v0.0.3`. This version includes the new stack.
 
 | Opcode | Name | Description | Notes | Link |
 | --- | --- | --- | --- | --- |
-| 01 _/rn imm16_ | mov r,imm16 | Put an immediate into a register || [mov](/docs/mov)
-| 02 _imm16_ | push imm16 | Push an immediate onto the stack || [push](/docs/push) 
-| 03 _/rn_ | inc r | Increment a register by 1 || [inc](/docs/inc)
-| 04 _/rn_ | pop r | Pop from the stack to a register || [pop](/docs/pop) 
-| 05 _/rn imm16_ | add imm16,r | Add immediate to a register || [add](/docs/add)
-| 07 _addr16_ | jmp addr16 | Jump to an address in memory || [jmp](/docs/jmp)
-| 08 _/r_ | mov r,r | Put the contents of a register into a register || [mov](/docs/mov)
+| 01 _/rn imm16_ | mov r,imm16 | Put an immediate into a register || [mov](/mov)
+| 02 _imm16_ | push imm16 | Push an immediate onto the stack || [push](/push) 
+| 03 _/rn_ | inc r | Increment a register by 1 || [inc](/inc)
+| 04 _/rn_ | pop r | Pop from the stack to a register || [pop](/pop) 
+| 05 _/rn imm16_ | add imm16,r | Add immediate to a register || [add](/add)
+| 07 _addr16_ | jmp addr16 | Jump to an address in memory || [jmp](/jmp)
+| 08 _/r_ | mov r,r | Put the contents of a register into a register || [mov](/mov)
  
 ## Low Level System Information
 
@@ -33,7 +33,7 @@ The entry point for programs is 0x0000. ROM can only be modified in "entry mode"
 
 ### Stack
 
-At memory address 0x8000, there are 100 bytes allocated to the stack. You can use [push](/docs/push) and [pop](/docs/pop) to interact with the stack. The stack itself operates on a FILO[^lifo] (First In; Last Out) system and the stack pointer is kept in register SP. When the stack pointer reaches `0x64` it goes back to `0x00` until it reaches existing elements, when it will throw a Segmentation Fault. Be careful!
+At memory address 0x8000, there are 100 bytes allocated to the stack. You can use [push](/push) and [pop](/pop) to interact with the stack. The stack itself operates on a FILO[^lifo] (First In; Last Out) system and the stack pointer is kept in register SP. When the stack pointer reaches `0x64` it goes back to `0x00` until it reaches existing elements, when it will throw a Segmentation Fault. Be careful!
 
 ### Modes
 
